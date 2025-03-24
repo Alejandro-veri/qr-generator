@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Payment Generator - Kapper</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        input { padding: 10px; margin: 10px; width: 200px; }
+        #qr-code { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>QR Betaling Generator</h1>
+    <p>Vul hieronder het bedrag en omschrijving in</p>
+    
+    <input type="text" id="amount" placeholder="Bedrag (€)"><br>
+    <input type="text" id="description" placeholder="Omschrijving"><br>
+    <button onclick="generateQR()">Genereer QR Code</button>
+
+    <canvas id="qr-code"></canvas>
+
+    <script>
+        function generateQR() {
+            const name = "Alejandro Verissimo"; // Naam kapper (kan later dynamisch)
+            const iban = "BE05001839534975"; // IBAN kapper
+            const bic = "GEBABEBB"; // BIC (voorbeeld)
+            const amount = document.getElementById("amount").value;
+            const desc = document.getElementById("description").value;
+            const reference = "RF123456"; // Statische reference (kan ook dynamisch)
+
+            const sepaContent = `BCD\n001\n1\nSCT\n${bic}\n${name}\n${iban}\nEUR${amount}\n${reference}\n${desc}`;
+            
+            const qr = new QRious({
+                element: document.getElementById("qr-code"),
+                value: sepaContent,
+                size: 250
+            });
+        }
+    </script>
+</body>
+</html>
