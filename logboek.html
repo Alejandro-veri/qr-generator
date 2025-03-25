@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Logboek - Kaan The Barber</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -64,7 +65,9 @@
   <div class="log-container">
     <h1>📄 Daglogboek - Kaan The Barber</h1>
     <ul id="log-list"></ul>
-    <button class="download-btn" onclick="downloadLog()">Download Logboek</button>
+    <button class="download-btn" onclick="downloadLog()">Download als TXT</button>
+    <button class="download-btn" onclick="downloadCSV()">Download als CSV</button>
+    <button class="download-btn" onclick="downloadExcel()">Download als Excel</button>
   </div>
 
   <script>
@@ -122,6 +125,38 @@
       link.href = window.URL.createObjectURL(blob);
       link.download = `KaanTheBarber-Betalingen-${dateFormatted}.txt`;
       link.click();
+    }
+
+    function downloadCSV() {
+      const dateFormatted = getTodayFormatted();
+      const data = document.getElementById("log-list");
+      const lines = [...data.querySelectorAll("li span")].map(span => {
+        const match = span.textContent.match(/(\d{2}:\d{2}:\d{2}) - €(\d+(?:,\d{2})?) - (.+)/);
+        if (match) return `${match[1]},${match[2].replace(',', '.')},"${match[3]}"`;
+        return '';
+      }).filter(l => l.trim() !== '');
+      const blob = new Blob(["tijd,bedrag,omschrijving\n" + lines.join("\n")], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `KaanTheBarber-Betalingen-${dateFormatted}.csv`;
+      link.click();
+    }
+
+    function downloadExcel() {
+      const dateFormatted = getTodayFormatted();
+      const data = document.getElementById("log-list");
+      const rows = [["Tijdstip", "Bedrag (€)", "Omschrijving"]];
+
+      [...data.querySelectorAll("li span")].forEach(span => {
+        const match = span.textContent.match(/(\d{2}:\d{2}:\d{2}) - €(\d+(?:,\d{2})?) - (.+)/);
+        if (match) rows.push([match[1], parseFloat(match[2].replace(',', '.')), match[3]]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Logboek");
+
+      XLSX.writeFile(wb, `KaanTheBarber-Betalingen-${dateFormatted}.xlsx`);
     }
 
     window.onload = renderLog;
