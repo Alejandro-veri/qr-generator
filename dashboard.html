@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Omzet Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .dashboard {
+      max-width: 700px;
+      margin: auto;
+      background-color: #222;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+    h1 {
+      color: gold;
+      margin-bottom: 20px;
+    }
+    canvas {
+      background: #fff;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>📊 Live Omzetoverzicht</h1>
+    <canvas id="omzetChart" width="600" height="300"></canvas>
+  
+    <div style="margin-top: 30px;">
+      <button onclick="window.location.href='logboek.html'" style="background: gold; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; color: black;">
+        📄 Bekijk Logboek
+      </button>
+    </div>
+
+</div>
+
+  <script>
+    function getLast7Dates() {
+      const dates = [];
+      const today = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        dates.push(d);
+      }
+      return dates;
+    }
+
+    function formatDateKey(date) {
+      return `log-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    }
+
+    function formatDateLabel(date) {
+      return date.toLocaleDateString('nl-BE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    }
+
+    function getDailyTotals() {
+      const labels = [];
+      const totals = [];
+
+      const days = getLast7Dates();
+      for (const day of days) {
+        const key = formatDateKey(day);
+        const label = formatDateLabel(day);
+        labels.push(label);
+
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+          totals.push(0);
+          continue;
+        }
+
+        const lines = raw.split('\n');
+        let total = 0;
+        for (const line of lines) {
+          const match = line.match(/€([\d,.]+)/);
+          if (match) total += parseFloat(match[1].replace(',', '.'));
+        }
+        totals.push(Math.round(total));
+      }
+
+      return { labels, totals };
+    }
+
+    function renderChart() {
+      const { labels, totals } = getDailyTotals();
+
+      const ctx = document.getElementById('omzetChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Omzet (€)',
+            data: totals,
+            fill: true,
+            borderColor: 'gold',
+            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+            tension: 0.3,
+            pointBackgroundColor: 'gold'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: { color: 'white' }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `€${ctx.parsed.y}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: 'white' },
+              grid: { color: '#444' }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: 'white' },
+              grid: { color: '#444' }
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = renderChart;
+  </script>
+</body>
+</html>

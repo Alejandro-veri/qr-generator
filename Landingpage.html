@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Service Pakketten - Kappers & Zelfstandigen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #111;
+      color: #fff;
+    }
+    header {
+      background: #000;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    header h1 { color: gold; margin: 0 0 10px; }
+    .intro { max-width: 700px; margin: 20px auto; text-align: center; font-size: 18px; color: #ccc; }
+    .packages {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 20px;
+    }
+    .card {
+      background: #222;
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+      border: 2px solid gold;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    .card h2 { color: gold; margin-bottom: 10px; }
+    .card h3 { margin-top: 0; font-size: 28px; color: white; }
+    ul { list-style: none; padding: 0; text-align: left; line-height: 1.8; }
+    .cta { text-align: center; margin: 40px 0; }
+    .cta button {
+      background: gold;
+      border: none;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QR Service Pakketten</h1>
+    <p class="intro">Voor zelfstandige kappers, barbiers & kleine ondernemers die professioneel willen werken zonder ingewikkelde software.</p>
+  </header>
+
+  <section class="packages">
+    <div class="card">
+      <h2>BASIC</h2>
+      <h3>€20/maand</h3>
+      <ul>
+        <li>✅ QR-betaalsysteem</li>
+        <li>✅ Dagelijks logboek</li>
+        <li>✅ Downloadbare TXT-rapporten</li>
+        <li>✅ Beveiligde toegang</li>
+        <li>✅ Eigen logo in QR tool</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>PRO</h2>
+      <h3>€35/maand</h3>
+      <ul>
+        <li>✅ Alles van BASIC</li>
+        <li>📊 Omzet dashboard</li>
+        <li>🧾 Automatische facturen (PDF)</li>
+        <li>🛒 QR's voor producten</li>
+        <li>🌐 Eigen subdomein</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>PREMIUM</h2>
+      <h3>€50/maand</h3>
+      <ul>
+        <li>✅ Alles van PRO</li>
+        <li>📇 Klantendatabase (optioneel)</li>
+        <li>📬 Automatische mail reminders</li>
+        <li>📁 Rapport export (Excel)</li>
+        <li>🎨 Extra branding opties</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="cta">
+    <p>Wil jij starten met professioneel digitaal betalen?</p>
+    <button onclick="window.location.href='mailto:jouwmail@bedrijf.be?subject=QR Tool Interesse'">Plan een demo</button>
+  </div>
+</body>
+</html>

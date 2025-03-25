@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logboek - Kaan The Barber</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .log-container {
+      background: #222;
+      max-width: 700px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    h1 {
+      color: gold;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    li {
+      background: #333;
+      margin: 10px 0;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background: crimson;
+      border: none;
+      padding: 6px 12px;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .download-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: gold;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="log-container">
+    <h1>📄 Daglogboek - Kaan The Barber</h1>
+    <ul id="log-list"></ul>
+    <button class="download-btn" onclick="downloadLog()">Download Logboek</button>
+  </div>
+
+  <script>
+    function getTodayKey() {
+      const today = new Date();
+      return `log-${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+    }
+
+    function getTodayFormatted() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      return `${day}-${month}-${year}`;
+    }
+
+    function renderLog() {
+      const key = getTodayKey();
+      const raw = localStorage.getItem(key);
+      const list = document.getElementById("log-list");
+      list.innerHTML = "";
+
+      if (!raw) {
+        list.innerHTML = "<li>Geen transacties vandaag.</li>";
+        return;
+      }
+
+      const entries = raw.trim().split("\n").filter(e => e.trim() !== "");
+      entries.forEach((entry, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${entry}</span>
+          <button class="delete-btn" onclick="deleteEntry(${index})">❌</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function deleteEntry(index) {
+      const key = getTodayKey();
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      let entries = raw.trim().split("\n").filter(e => e.trim() !== "");
+      entries.splice(index, 1);
+      localStorage.setItem(key, entries.join("\n"));
+      renderLog();
+    }
+
+    function downloadLog() {
+      const dateFormatted = getTodayFormatted();
+      const data = document.getElementById("log-list");
+      const lines = [...data.querySelectorAll("li span")].map(span => span.textContent).join("\n");
+      const blob = new Blob([lines], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `KaanTheBarber-Betalingen-${dateFormatted}.txt`;
+      link.click();
+    }
+
+    window.onload = renderLog;
+  </script>
+</body>
+</html>
